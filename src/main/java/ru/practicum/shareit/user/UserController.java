@@ -2,13 +2,12 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.validation.marker.Create;
 import ru.practicum.shareit.validation.marker.Update;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collection;
@@ -21,38 +20,39 @@ public class UserController {
 
     private final UserService userService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public UserDto add(@Validated({Create.class}) @RequestBody UserDto userDto) {
-        log.info("Новый User добавлен");
-        User user = userService.addUser(UserMapper.toUser(userDto, null));
-        return UserMapper.toUserDto(user);
+    public UserDto addUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
+        log.info("Добавление нового User");
+        return userService.addUser(userDto);
     }
 
-    @GetMapping
-    public Collection<UserDto> getAll() {
-        log.info("Вывод всех Users");
-        Collection<User> users = userService.getAllUsers();
-        return UserMapper.toUserDto(users);
-    }
-
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable int id) {
-        log.info("User с id = " + id + " получен");
-        User user = userService.getUserById(id);
-        return UserMapper.toUserDto(user);
+    public UserDto getUserById(@PathVariable int id) {
+        log.info("Получение User с id = {}", id);
+        return userService.getUserById(id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public Collection<UserDto> getAllUsers() {
+        log.info("Вывод всех Users");
+        return userService.getAllUsers();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{id}")
-    public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto,
-                          @PathVariable("id") int id) {
-        log.info("User с id = " + id + " обновлен");
-        User user = userService.updateUser(UserMapper.toUser(userDto, id));
-        return UserMapper.toUserDto(user);
+    public UserDto updateUser(@Validated({Update.class}) @RequestBody UserDto userDto,
+                              @PathVariable("id") int id) {
+        log.info("Обнавление User с id = {}", id);
+        return userService.updateUser(userDto, id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int id) {
-        log.info("User с id = " + id + " удален");
+    public void deleteUserById(@PathVariable int id) {
+        log.info("Удаление User с id = {}", id);
         userService.deleteUserById(id);
     }
 }

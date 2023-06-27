@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class UserDto {
     private int id;
-    @NotNull(groups = {Create.class}, message = "Name у User должно существовать")
+    @NotNull(groups = {Create.class}, message = "Name у User должен существовать")
     private final String name;
     @Email(groups = {Create.class}, message = "Email у User должен быть корректным")
     @NotNull(groups = {Create.class}, message = "Email у User должен существовать")

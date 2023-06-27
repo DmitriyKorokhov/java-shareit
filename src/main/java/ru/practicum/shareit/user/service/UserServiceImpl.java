@@ -2,7 +2,8 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collection;
@@ -10,25 +11,26 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage storage;
 
-    public User getUserById(int id) {
-        return storage.getUserById(id);
+    private final UserStorage userStorage;
+
+    public UserDto addUser(UserDto userDto) {
+        return UserMapper.toUserDto(userStorage.addUser(UserMapper.toUser(userDto, null)));
     }
 
-    public Collection<User> getAllUsers() {
-        return storage.getAllUsers();
+    public UserDto getUserById(int id) {
+        return UserMapper.toUserDto(userStorage.getUserById(id));
     }
 
-    public User addUser(User user) {
-        return storage.addUser(user);
+    public Collection<UserDto> getAllUsers() {
+        return UserMapper.toListOfUserDto(userStorage.getAllUsers());
     }
 
-    public User updateUser(User user) {
-        return storage.updateUser(user);
+    public UserDto updateUser(UserDto userDto, int userId) {
+        return UserMapper.toUserDto(userStorage.updateUser(UserMapper.toUser(userDto, userId)));
     }
 
     public void deleteUserById(int id) {
-        storage.deleteUserById(id);
+        userStorage.deleteUserById(id);
     }
 }

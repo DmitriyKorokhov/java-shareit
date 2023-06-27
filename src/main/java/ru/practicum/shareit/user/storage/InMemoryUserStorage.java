@@ -11,6 +11,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
+
     private final HashMap<Integer, User> mapUsers = new HashMap<>();
     private final List<String> listEmails = new ArrayList<>();
     private int userId = 0;

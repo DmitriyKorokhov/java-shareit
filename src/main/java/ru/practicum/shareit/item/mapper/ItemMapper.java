@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class ItemMapper {
-
     public Item toItem(ItemDto itemDto, int ownerId, int itemId) {
         return Item.builder()
                 .name(itemDto.getName())
@@ -38,7 +37,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public Collection<ItemDto> toItemDto(Collection<Item> items) {
+    public Collection<ItemDto> toListOfItemDto(Collection<Item> items) {
         return items.stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
