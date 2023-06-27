@@ -40,7 +40,7 @@ public class InMemoryItemStorage implements ItemStorage {
         int id = updatedItem.getId();
         checkItemById(id);
         Item item = mapItems.get(id);
-        if (item.getOwnerId() != updatedItem.getOwnerId()) {
+        if (!Objects.equals(item.getOwnerId(), updatedItem.getOwnerId())) {
             throw new ValidationException("Неизвестный User у Item c id = " + id);
         }
         if (updatedItem.getName() != null && !updatedItem.getName().isBlank()) {
