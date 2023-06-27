@@ -57,4 +57,11 @@ public class ItemController {
         log.info("Запрос на поиск вещи: " + text);
         return itemService.findItemsByText(text);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}")
+    public void deleteItemById(@PathVariable("id") int itemId) {
+        log.info("Удаление Item с id = {}", itemId);
+        itemService.deleteItemById(itemId);
+    }
 }

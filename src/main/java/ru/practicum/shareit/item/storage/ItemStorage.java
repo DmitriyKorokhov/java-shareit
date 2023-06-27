@@ -14,4 +14,6 @@ public interface ItemStorage {
     Item getItemById(int itemId);
 
     Collection<Item> findItemsByText(String text);
+
+    void deleteItemById(int itemId);
 }

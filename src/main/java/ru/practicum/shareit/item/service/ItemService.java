@@ -14,4 +14,6 @@ public interface ItemService {
     ItemDto updateItem(ItemDto itemDto, int userId, int itemId);
 
     Collection<ItemDto> findItemsByText(String text);
+
+    void deleteItemById(int itemId);
 }

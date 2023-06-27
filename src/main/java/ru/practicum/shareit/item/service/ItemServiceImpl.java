@@ -20,7 +20,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto addItem(ItemDto itemDto, int userId) {
         Item item = ItemMapper.toItem(itemDto, userId);
-        userStorage.checkUserById(item.getOwner());
+        userStorage.checkUserById(item.getOwnerId());
         return ItemMapper.toItemDto(itemStorage.addItem(item));
     }
 
@@ -43,5 +43,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDto> findItemsByText(String text) {
         return ItemMapper.toListOfItemDto(itemStorage.findItemsByText(text));
+    }
+
+    @Override
+    public void deleteItemById(int itemId) {
+        itemStorage.deleteItemById(itemId);
     }
 }

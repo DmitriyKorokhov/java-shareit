@@ -25,7 +25,7 @@ public class InMemoryItemStorage implements ItemStorage {
     public Item addItem(Item item) {
         item.setId(++itemId);
         mapItems.put(item.getId(), item);
-        mapItemsByUser.compute(item.getOwner(), (userId, userItems) -> {
+        mapItemsByUser.compute(item.getOwnerId(), (userId, userItems) -> {
             if (userItems == null) {
                 userItems = new ArrayList<>();
             }
@@ -40,7 +40,7 @@ public class InMemoryItemStorage implements ItemStorage {
         int id = updatedItem.getId();
         checkItemById(id);
         Item item = mapItems.get(id);
-        if (item.getOwner() != updatedItem.getOwner()) {
+        if (item.getOwnerId() != updatedItem.getOwnerId()) {
             throw new ValidationException("Неизвестный User у Item c id = " + id);
         }
         if (updatedItem.getName() != null && !updatedItem.getName().isBlank()) {
@@ -79,5 +79,13 @@ public class InMemoryItemStorage implements ItemStorage {
                         item.getDescription().toLowerCase().contains(text.toLowerCase())) &&
                         item.getAvailable())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteItemById(int itemId) {
+        checkItemById(itemId);
+        int ownerId = mapItems.get(itemId).getOwnerId();
+        mapItemsByUser.get(ownerId).remove(mapItems.get(itemId));
+        mapItems.remove(itemId);
     }
 }

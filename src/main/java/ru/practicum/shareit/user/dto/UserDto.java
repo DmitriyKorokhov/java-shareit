@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Builder
 public class UserDto {
-    private int id;
+    private Integer id;
     @NotNull(groups = {Create.class}, message = "Name у User должен существовать")
     private final String name;
     @Email(groups = {Create.class}, message = "Email у User должен быть корректным")
