@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-public class ResponseItemDto {
+public class ItemResponseDto {
     private int id;
     private String name;
     private String description;

@@ -13,7 +13,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.ResponseCommentDto;
-import ru.practicum.shareit.item.dto.ResponseItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.comment.repository.CommentRepository;
@@ -73,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseItemDto getItemById(int itemId, int userId) {
+    public ItemResponseDto getItemById(int itemId, int userId) {
         Item item = getItem(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
         LocalDateTime now = LocalDateTime.now();
@@ -90,13 +90,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ResponseItemDto> getUsersAllItems(int userId) {
+    public Collection<ItemResponseDto> getUsersAllItems(int userId) {
         User owner = findUser(userId);
         Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner);
         return toRespnseItemDto(items);
     }
 
-    private Collection<ResponseItemDto> toRespnseItemDto(Collection<Item> items) {
+    private Collection<ItemResponseDto> toRespnseItemDto(Collection<Item> items) {
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
         Map<Item, List<Comment>> comments = findComments(items);
         LocalDateTime now = LocalDateTime.now();
@@ -118,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseItemDto getResponseItemDto(Item item, List<Booking> bookings, List<Comment> comments, LocalDateTime now) {
+    public ItemResponseDto getResponseItemDto(Item item, List<Booking> bookings, List<Comment> comments, LocalDateTime now) {
         Booking lastBooking = null;
         Booking nextBooking = null;
         if (bookings != null && !bookings.isEmpty()) {
@@ -136,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ResponseItemDto> findItemsByText(String text) {
+    public Collection<ItemResponseDto> findItemsByText(String text) {
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }

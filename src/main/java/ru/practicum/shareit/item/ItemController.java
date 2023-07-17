@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.comment.dto.ResponseCommentDto;
-import ru.practicum.shareit.item.dto.ResponseItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.marker.Create;
 import ru.practicum.shareit.validation.marker.Update;
@@ -44,14 +44,14 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public Collection<ResponseItemDto> getUsersAllItems(@RequestHeader(USER_ID_HEADER) int userId) {
+    public Collection<ItemResponseDto> getUsersAllItems(@RequestHeader(USER_ID_HEADER) int userId) {
         log.info("Вывод всех Items User с id = {}", userId);
         return itemService.getUsersAllItems(userId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
-    public ResponseItemDto getItemById(@PathVariable("id") int itemId,
+    public ItemResponseDto getItemById(@PathVariable("id") int itemId,
                                        @RequestHeader(USER_ID_HEADER) int userId) {
         log.info("Получение Item с id = {}", itemId);
         return itemService.getItemById(itemId, userId);
@@ -59,7 +59,7 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/search")
-    public Collection<ResponseItemDto> findItemsByText(@RequestParam String text) {
+    public Collection<ItemResponseDto> findItemsByText(@RequestParam String text) {
         log.info("Поиск вещи: " + text);
         return itemService.findItemsByText(text);
     }

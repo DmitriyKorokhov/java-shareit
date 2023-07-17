@@ -5,7 +5,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ResponseItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
@@ -13,8 +13,8 @@ import java.util.List;
 
 @UtilityClass
 public class ItemMapper {
-    public ResponseItemDto toItemResponseDto(Item item, Booking last, Booking next, List<Comment> comments) {
-        return ResponseItemDto.builder()
+    public ItemResponseDto toItemResponseDto(Item item, Booking last, Booking next, List<Comment> comments) {
+        return ItemResponseDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
