@@ -2,32 +2,51 @@ package ru.practicum.shareit.validation.errorhandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.validation.exception.IncorrectStatusException;
 import ru.practicum.shareit.validation.exception.ValidationException;
-import ru.practicum.shareit.validation.exception.UserDataException;
+
+import javax.validation.ConstraintViolationException;
 
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleValidation(final ValidationException e) {
-        log.warn("Ошибка - переданные данные объекта некорректны", HttpStatus.resolve(404));
-        return Map.of(
-                "Ошибка валидации", e.getMessage()
-        );
+    @ExceptionHandler(IncorrectStatusException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidation(final IncorrectStatusException e) {
+        log.error(e.getMessage(), HttpStatus.resolve(400));
+        return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleThrowable(final ConstraintViolationException e) {
+        log.error(e.getMessage(), HttpStatus.resolve(400));
+        return Map.of("Bad Request", e.getMessage());
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleConflict(final UserDataException e) {
-        log.warn("Конфликт - переданные данные объекта некорректны", HttpStatus.resolve(409));
-        return Map.of(
-                "Ошибка в данных пользователя", e.getMessage()
-        );
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleInternalServerError(final Throwable e) {
+        log.error(e.getMessage(), HttpStatus.resolve(500));
+        return Map.of("Internal Server Error", e.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ValidationException handleValidationException(final ValidationException e) {
+        log.error(e.getMessage());
+        throw e;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleDateException(ConstraintViolationException e) {
+        log.error(e.getMessage(), HttpStatus.resolve(400));
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

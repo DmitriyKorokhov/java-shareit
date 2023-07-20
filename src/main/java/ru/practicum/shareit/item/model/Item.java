@@ -1,22 +1,25 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "items")
 public class Item {
-    private Integer id;
-    @NotBlank(message = "Name не может быть пустым")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
+    private int id;
     private String name;
-    @NotBlank(message = "Description не может быть пустым")
     private String description;
-    @NotNull(message = "Available не может быть пустым")
+    @Column(name = "is_available")
     private Boolean available;
-    @NotNull(message = "У Item должен быть Owner")
-    private Integer ownerId;
-    private ItemRequest request;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 }
