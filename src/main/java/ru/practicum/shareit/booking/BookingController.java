@@ -24,7 +24,7 @@ public class BookingController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    BookingResponseDto addBooking(@Valid @RequestBody BookingRequestDto bookingRequestDto,
+    BookingResponseDto addBooking(@RequestBody @Valid BookingRequestDto bookingRequestDto,
                                   @RequestHeader(USER_ID_HEADER) int bookerId) {
         log.info("Добавление нового Booking");
         return bookingService.addBooking(bookingRequestDto, bookerId);

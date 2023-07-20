@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.comment.dto.ResponseCommentDto;
+import ru.practicum.shareit.comment.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.marker.Create;
@@ -66,7 +66,7 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/{itemId}/comment")
-    public ResponseCommentDto addCommentForItem(@Valid @RequestBody CommentDto commentDto,
+    public CommentResponseDto addCommentForItem(@Valid @RequestBody CommentDto commentDto,
                                                 @PathVariable int itemId,
                                                 @RequestHeader(USER_ID_HEADER) int userId) {
         log.info("Добавление комментария для Item с id = {}", itemId);

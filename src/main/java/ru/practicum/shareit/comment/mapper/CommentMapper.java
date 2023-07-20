@@ -2,7 +2,7 @@ package ru.practicum.shareit.comment.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.comment.dto.ResponseCommentDto;
+import ru.practicum.shareit.comment.dto.CommentResponseDto;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -23,8 +23,8 @@ public class CommentMapper {
                 .build();
     }
 
-    public ResponseCommentDto toCommentResponseDto(Comment comment) {
-        return ResponseCommentDto.builder()
+    public CommentResponseDto toCommentResponseDto(Comment comment) {
+        return CommentResponseDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
                 .authorName(comment.getAuthor().getName())
@@ -32,7 +32,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public List<ResponseCommentDto> toListCommentResponseDto(Collection<Comment> comments) {
+    public List<CommentResponseDto> toListCommentResponseDto(Collection<Comment> comments) {
         if (comments == null) {
             return null;
         }

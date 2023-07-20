@@ -5,6 +5,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,8 +19,10 @@ public class Booking {
     @Column(name = "booking_id")
     private int id;
     @Column(name = "start_date")
+    @NotNull(message = "Время start у Booking должно существовать")
     private LocalDateTime start;
     @Column(name = "end_date")
+    @NotNull(message = "Время end у Booking должно существовать")
     private LocalDateTime end;
     @JoinColumn(name = "item_id")
     @ManyToOne

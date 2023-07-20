@@ -13,7 +13,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     Collection<Item> findAllByOwnerOrderById(User user);
 
     @Query("SELECT i FROM items AS i " +
-            "WHERE upper(i.name) LIKE upper(concat('%', :text, '%')) " +
-            "OR upper(i.description) LIKE upper(concat('%', :text, '%')) AND i.available = TRUE")
+            "WHERE UPPER(i.name) LIKE UPPER(CONCAT('%', :text, '%') ) " +
+            "OR UPPER(i.description) LIKE UPPER(CONCAT('%', :text, '%')) AND i.available = TRUE")
     List<Item> search(@Param("text") String text);
 }

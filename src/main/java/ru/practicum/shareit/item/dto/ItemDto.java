@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class ItemDto {
     private int id;
-    @NotBlank(groups = {Create.class}, message = "Name не может быть пустым")
+    @NotBlank(groups = {Create.class}, message = "Name у Item не может быть пустым")
     private String name;
     @NotBlank(groups = {Create.class}, message = "Description не может быть пустым")
     private String description;
-    @NotNull(groups = {Create.class}, message = "Available не может быть пустым")
+    @NotNull(groups = {Create.class}, message = "Available у Item не может быть пустым")
     private Boolean available;
 }

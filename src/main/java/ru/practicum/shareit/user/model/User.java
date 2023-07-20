@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -15,9 +17,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Integer id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
+    @NotBlank(message = "Name у User не должен быть пустым")
     private String name;
     @Email(message = "Email у User должен быть корректным")
-    @Column(name = "email", nullable = false, unique = true)
+    @NotNull(message = "Email у User должен существовать")
+    @Column(name = "email", unique = true)
     private String email;
 }

@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +11,7 @@ import ru.practicum.shareit.comment.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.comment.dto.ResponseCommentDto;
+import ru.practicum.shareit.comment.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -31,9 +30,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class ItemServiceImpl implements ItemService {
 
-    private static final Sort SORT_BY_START = Sort.by("start");
-    private static final Sort SORT_BY_START_DESC = Sort.by("start").descending();
-    private static final Comparator<Booking> BOOKING_COMPARATOR = Comparator.comparing(Booking::getStart);
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
@@ -76,32 +72,29 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto getItemById(int itemId, int userId) {
         Item item = getItem(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
-        LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = null;
         Booking nextBooking = null;
         if (item.getOwner().getId() == userId) {
-            lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(item.getId(), now, SORT_BY_START_DESC).stream()
-                    .findFirst().orElse(null);
-            nextBooking = bookingRepository.findBookingByItemIdAndStartAfterAndStatus(item.getId(), now, BookingStatus.APPROVED, SORT_BY_START).stream()
-                    .findFirst().orElse(null);
+            lastBooking = bookingRepository.findFirstBookingByItemIdAndStartBeforeAndStatusOrderByStartDesc(item.getId(), LocalDateTime.now(), BookingStatus.APPROVED);
+            nextBooking = bookingRepository.findFirstBookingByItemIdAndStartAfterAndStatusOrderByStartAsc(item.getId(), LocalDateTime.now(), BookingStatus.APPROVED);
         }
         return ItemMapper.toItemResponseDto(item, lastBooking, nextBooking, comments);
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public Collection<ItemResponseDto> getUsersAllItems(int userId) {
         User owner = findUser(userId);
         Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner);
-        return toRespnseItemDto(items);
+        return toResponseItemDto(items);
     }
 
-    private Collection<ItemResponseDto> toRespnseItemDto(Collection<Item> items) {
+    private Collection<ItemResponseDto> toResponseItemDto(Collection<Item> items) {
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
         Map<Item, List<Comment>> comments = findComments(items);
-        LocalDateTime now = LocalDateTime.now();
         return items.stream()
-                .map(item -> getResponseItemDto(item, bookingsByItem.get(item), comments.get(item), now))
+                .map(item -> getResponseItemDto(item, bookingsByItem.get(item), comments.get(item)))
                 .collect(Collectors.toList());
     }
 
@@ -118,18 +111,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemResponseDto getResponseItemDto(Item item, List<Booking> bookings, List<Comment> comments, LocalDateTime now) {
+    public ItemResponseDto getResponseItemDto(Item item, List<Booking> bookings, List<Comment> comments) {
         Booking lastBooking = null;
         Booking nextBooking = null;
         if (bookings != null && !bookings.isEmpty()) {
-            lastBooking = bookings.stream()
-                    .sorted(BOOKING_COMPARATOR)
-                    .filter(booking -> booking.getStart().isBefore(now))
-                    .findFirst().orElse(null);
-            nextBooking = bookings.stream()
-                    .sorted(BOOKING_COMPARATOR)
-                    .filter(booking -> booking.getStart().isAfter(now))
-                    .findFirst().orElse(null);
+            lastBooking = bookingRepository.findFirstBookingByItemIdAndStartBeforeAndStatusOrderByStartDesc(item.getId(), LocalDateTime.now(), BookingStatus.APPROVED);
+            nextBooking = bookingRepository.findFirstBookingByItemIdAndStartAfterAndStatusOrderByStartAsc(item.getId(), LocalDateTime.now(), BookingStatus.APPROVED);
         }
         return ItemMapper.toItemResponseDto(item, lastBooking, nextBooking, comments);
     }
@@ -141,11 +128,11 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
         List<Item> items = itemRepository.search(text);
-        return toRespnseItemDto(items);
+        return toResponseItemDto(items);
     }
 
     @Override
-    public ResponseCommentDto addCommentForItem(CommentDto commentDto, int itemId, int userId) {
+    public CommentResponseDto addCommentForItem(CommentDto commentDto, int itemId, int userId) {
         Item item = getItem(itemId);
         User author = findUser(userId);
         Collection<Booking> bookings = bookingRepository.findBookingByItemIdAndBookerIdAndStatusAndStartBefore(itemId, userId, BookingStatus.APPROVED, LocalDateTime.now());

@@ -1,10 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.constant.Constants;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -27,7 +27,6 @@ import java.util.Collection;
 @Transactional
 public class BookingServiceImpl implements BookingService {
 
-    private static final Sort SORT_BY_START_DESC = Sort.by("start").descending();
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -40,9 +39,6 @@ public class BookingServiceImpl implements BookingService {
         }
         if (!item.getAvailable()) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Item недоступна");
-        }
-        if (bookingRequestDto.getStart().isAfter(bookingRequestDto.getEnd()) || bookingRequestDto.getStart().isEqual(bookingRequestDto.getEnd())) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Time некорректно задано");
         }
         User user = findUser(userId);
         Booking booking = BookingMapper.toBooking(bookingRequestDto, item, user);
@@ -59,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Booking уже было подтверждено");
         }
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        return BookingMapper.toBookingResponseDto(bookingRepository.save(booking));
+        return BookingMapper.toBookingResponseDto(booking);
     }
 
     @Override
@@ -87,30 +83,30 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case CURRENT:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findByBookerIdCurrent(userId, now, SORT_BY_START_DESC)
+                        bookingRepository.findByBookerIdCurrent(userId, now, Constants.SORT_BY_START_DESC)
                 );
             case PAST:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findByBookerIdAndEndIsBefore(userId, now, SORT_BY_START_DESC)
+                        bookingRepository.findByBookerIdAndEndIsBefore(userId, now, Constants.SORT_BY_START_DESC)
                 );
             case FUTURE:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findByBookerIdAndStartIsAfter(userId, now, SORT_BY_START_DESC)
+                        bookingRepository.findByBookerIdAndStartIsAfter(userId, now, Constants.SORT_BY_START_DESC)
                 );
             case WAITING:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.WAITING, SORT_BY_START_DESC)
+                        bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.WAITING, Constants.SORT_BY_START_DESC)
                 );
             case REJECTED:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED, SORT_BY_START_DESC)
+                        bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED, Constants.SORT_BY_START_DESC)
                 );
             case UNSUPPORTED_STATUS:
                 throw new IncorrectStatusException("Unknown state: UNSUPPORTED_STATUS");
             case ALL:
             default:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findByBookerId(userId, SORT_BY_START_DESC)
+                        bookingRepository.findByBookerId(userId, Constants.SORT_BY_START_DESC)
                 );
         }
     }
@@ -123,30 +119,30 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case CURRENT:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findBookingsByItemOwnerCurrent(owner, now, SORT_BY_START_DESC)
+                        bookingRepository.findBookingsByItemOwnerCurrent(owner, now, Constants.SORT_BY_START_DESC)
                 );
             case PAST:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findBookingByItemOwnerAndEndIsBefore(owner, now, SORT_BY_START_DESC)
+                        bookingRepository.findBookingByItemOwnerAndEndIsBefore(owner, now, Constants.SORT_BY_START_DESC)
                 );
             case FUTURE:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findBookingByItemOwnerAndStartIsAfter(owner, now, SORT_BY_START_DESC)
+                        bookingRepository.findBookingByItemOwnerAndStartIsAfter(owner, now, Constants.SORT_BY_START_DESC)
                 );
             case WAITING:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.WAITING, SORT_BY_START_DESC)
+                        bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.WAITING, Constants.SORT_BY_START_DESC)
                 );
             case REJECTED:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.REJECTED, SORT_BY_START_DESC)
+                        bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.REJECTED, Constants.SORT_BY_START_DESC)
                 );
             case UNSUPPORTED_STATUS:
                 throw new IncorrectStatusException("Unknown state: UNSUPPORTED_STATUS");
             case ALL:
             default:
                 return BookingMapper.toListBookingDto(
-                        bookingRepository.findBookingByItemOwner(owner, SORT_BY_START_DESC)
+                        bookingRepository.findBookingByItemOwner(owner, Constants.SORT_BY_START_DESC)
                 );
         }
     }
