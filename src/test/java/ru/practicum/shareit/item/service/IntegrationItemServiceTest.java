@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -20,8 +21,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static ru.practicum.shareit.TestUtils.bookerWithoutId;
-import static ru.practicum.shareit.TestUtils.ownerWithoutId;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -34,8 +33,18 @@ public class IntegrationItemServiceTest {
 
     @Test
     void getAllTest() {
-        UserDto createdOwner = userService.addUser(UserMapper.toUserDto(ownerWithoutId));
-        UserDto createdBooker = userService.addUser(UserMapper.toUserDto(bookerWithoutId));
+        User owner = User.builder()
+                .id(1)
+                .name("owner")
+                .email("owner@mail.com")
+                .build();
+        User booker = User.builder()
+                .id(2)
+                .name("booker")
+                .email("booker@mail.com")
+                .build();
+        UserDto createdOwner = userService.addUser(UserMapper.toUserDto(owner));
+        UserDto createdBooker = userService.addUser(UserMapper.toUserDto(booker));
         ItemDto createdItem = itemService.addItem(ItemDto.builder()
                         .name("item")
                         .description("description")

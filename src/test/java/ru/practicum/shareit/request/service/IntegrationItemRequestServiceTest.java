@@ -31,11 +31,11 @@ public class IntegrationItemRequestServiceTest {
 
     @Test
     void getForOwner() {
-        UserDto ownerWithoutId = new UserDto(1, "owner", "owner@mail.com");
-        UserDto requestorWithoutId = new UserDto(2, "requestor", "requestor@mail.com");
+        UserDto owner = new UserDto(1, "owner", "owner@mail.com");
+        UserDto requestor = new UserDto(2, "requestor", "requestor@mail.com");
 
-        UserDto createdOwner = userService.addUser(ownerWithoutId);
-        UserDto createdRequestor = userService.addUser(requestorWithoutId);
+        UserDto createdOwner = userService.addUser(owner);
+        UserDto createdRequestor = userService.addUser(requestor);
         itemService.addItem(ItemDto.builder()
                         .name("item1")
                         .description("description1")
