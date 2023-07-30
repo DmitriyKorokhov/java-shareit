@@ -9,12 +9,9 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class UserMapper {
+
     public UserDto toUserDto(User user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
+        return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
     public User toUser(UserDto userDto, Integer id) {

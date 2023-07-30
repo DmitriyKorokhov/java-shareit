@@ -1,8 +1,8 @@
 package ru.practicum.shareit.booking.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class BookingMapper {
+
     public Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User booker) {
         return Booking.builder()
                 .start(bookingRequestDto.getStart())
@@ -26,7 +27,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public BookingItemDto toBookingDto(Booking booking) {
+    public BookingItemDto toBookingReferencedDto(Booking booking) {
         if (booking == null) {
             return null;
         }
@@ -40,7 +41,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public BookingResponseDto toBookingResponseDto(Booking booking) {
+    public BookingResponseDto toResponseBookingDto(Booking booking) {
         if (booking == null) {
             return null;
         }
@@ -54,9 +55,9 @@ public class BookingMapper {
                 .build();
     }
 
-    public Collection<BookingResponseDto> toListBookingDto(Collection<Booking> bookings) {
+    public Collection<BookingResponseDto> toBookingReferencedDto(Collection<Booking> bookings) {
         return bookings.stream()
-                .map(BookingMapper::toBookingResponseDto)
+                .map(BookingMapper::toResponseBookingDto)
                 .collect(Collectors.toList());
     }
 }

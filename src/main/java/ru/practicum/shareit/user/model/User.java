@@ -20,8 +20,8 @@ public class User {
     @Column(name = "name")
     @NotBlank(message = "Name у User не должен быть пустым")
     private String name;
+    @Column(name = "email", unique = true)
     @Email(message = "Email у User должен быть корректным")
     @NotNull(message = "Email у User должен существовать")
-    @Column(name = "email", unique = true)
     private String email;
 }

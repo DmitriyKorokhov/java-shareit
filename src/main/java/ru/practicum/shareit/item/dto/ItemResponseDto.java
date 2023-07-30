@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 public class ItemResponseDto {
     private int id;
     @NotBlank(message = "Name у Item не может быть пустым")
@@ -22,4 +21,5 @@ public class ItemResponseDto {
     private BookingItemDto lastBooking;
     private BookingItemDto nextBooking;
     private List<CommentResponseDto> comments;
+    private Integer requestId;
 }

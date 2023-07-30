@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.util.Collection;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto, null)));
     }
 
-    @Override
     @Transactional(readOnly = true)
     public UserDto getUserById(int id) {
         return UserMapper.toUserDto(userRepository.findById(id).orElseThrow(() ->

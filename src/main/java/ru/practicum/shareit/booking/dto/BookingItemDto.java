@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import javax.validation.constraints.NotNull;

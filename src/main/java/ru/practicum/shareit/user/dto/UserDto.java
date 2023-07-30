@@ -1,19 +1,21 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.validation.marker.Create;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
-    private Integer id;
+    private int id;
     @NotNull(groups = {Create.class}, message = "Name у User должен существовать")
-    private final String name;
+    private String name;
     @Email(groups = {Create.class}, message = "Email у User должен быть корректным")
     @NotNull(groups = {Create.class}, message = "Email у User должен существовать")
-    private final String email;
+    private String email;
 }
