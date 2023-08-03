@@ -43,6 +43,9 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getAvailable()) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Вещь недоступна");
         }
+        if (bookingRequestDto.getStart().isAfter(bookingRequestDto.getEnd()) || bookingRequestDto.getStart().isEqual(bookingRequestDto.getEnd())) {
+            throw new ValidationException(HttpStatus.BAD_REQUEST, "Вещь недоступна");
+        }
         User user = findUser(userId);
         Booking booking = BookingMapper.toBooking(bookingRequestDto, item, user);
         return BookingMapper.toResponseBookingDto(bookingRepository.save(booking));
