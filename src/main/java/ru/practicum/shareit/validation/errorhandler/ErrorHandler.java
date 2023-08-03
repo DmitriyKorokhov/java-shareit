@@ -2,6 +2,7 @@ package ru.practicum.shareit.validation.errorhandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -42,5 +43,11 @@ public class ErrorHandler {
     public ValidationException handleValidationException(final ValidationException e) {
         log.error(e.getMessage(), e);
         throw e;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleDateException(ConstraintViolationException e) {
+        log.error(e.getMessage(), HttpStatus.resolve(400));
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

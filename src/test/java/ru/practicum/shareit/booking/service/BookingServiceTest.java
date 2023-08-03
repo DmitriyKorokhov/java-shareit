@@ -64,7 +64,7 @@ public class BookingServiceTest {
         bookingDto.setStart(LocalDateTime.now());
         bookingDto.setEnd(LocalDateTime.now().minusDays(1));
         exception = assertThrows(ValidationException.class, () -> bookingService.addBooking(bookingDto, booker.getId()));
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
 
         // normal
         bookingDto.setEnd(LocalDateTime.now().plusDays(1));
