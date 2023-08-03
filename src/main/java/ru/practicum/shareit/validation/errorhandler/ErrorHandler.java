@@ -44,10 +44,4 @@ public class ErrorHandler {
         log.error(e.getMessage(), e);
         throw e;
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> constraint(ConstraintViolationException e) {
-        log.error(e.getMessage(), HttpStatus.resolve(400));
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 }
