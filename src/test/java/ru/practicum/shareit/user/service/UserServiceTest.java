@@ -40,7 +40,7 @@ public class UserServiceTest {
 
     @Test
     void getUserTest() {
-        UserDto userDto = UserMapper.toUserDto(user1);
+        UserDto userDto = UserMapper.INSTANCE.toUserDto(user1);
         when(userRepository.findById(any(Integer.class)))
                 .thenReturn(Optional.of(user1));
         UserDto gottenUser = userService.getUserById(1);
@@ -51,8 +51,8 @@ public class UserServiceTest {
 
     @Test
     void getAllUsersTest() {
-        UserDto userDto1 = UserMapper.toUserDto(user1);
-        UserDto userDto2 = UserMapper.toUserDto(user2);
+        UserDto userDto1 = UserMapper.INSTANCE.toUserDto(user1);
+        UserDto userDto2 = UserMapper.INSTANCE.toUserDto(user2);
         when(userRepository.findAll())
                 .thenReturn(List.of(user1, user2));
         Collection<UserDto> users = userService.getAllUsers();
@@ -65,10 +65,10 @@ public class UserServiceTest {
 
     @Test
     void createUserTest() {
-        UserDto userDto = UserMapper.toUserDto(user1);
+        UserDto userDto = UserMapper.INSTANCE.toUserDto(user1);
         when(userRepository.save(any(User.class)))
                 .thenReturn(user1);
-        UserDto createdUser = userService.addUser(UserMapper.toUserDto(user1));
+        UserDto createdUser = userService.addUser(UserMapper.INSTANCE.toUserDto(user1));
         assertNotNull(createdUser);
         assertEquals(userDto, createdUser);
         verify(userRepository, times(1)).save(any(User.class));
@@ -76,7 +76,7 @@ public class UserServiceTest {
 
     @Test
     void createUserWithInvalidEmailValidationTest() {
-        UserDto userDto = UserMapper.toUserDto(user1);
+        UserDto userDto = UserMapper.INSTANCE.toUserDto(user1);
         userDto.setEmail("invalidEmail");
         when(userRepository.save(any())).thenThrow(ValidationException.class);
         assertThatThrownBy(() -> userService.addUser(userDto)).isInstanceOf(ValidationException.class);
@@ -84,10 +84,10 @@ public class UserServiceTest {
 
     @Test
     void updateUserTest() {
-        UserDto userDto = UserMapper.toUserDto(user1);
+        UserDto userDto = UserMapper.INSTANCE.toUserDto(user1);
         when(userRepository.findById(any(Integer.class)))
                 .thenReturn(Optional.of(user1));
-        UserDto updatedUser = userService.updateUser(UserMapper.toUserDto(user1), 1);
+        UserDto updatedUser = userService.updateUser(UserMapper.INSTANCE.toUserDto(user1), 1);
         assertNotNull(updatedUser);
         assertEquals(updatedUser, userDto);
         verify(userRepository, times(1)).findById(any(Integer.class));
@@ -96,7 +96,7 @@ public class UserServiceTest {
     @Test
     void updateUserByIdWithExceptionTest() {
         UserDto userDtoThree = new UserDto(3, "user3", "user3@mail.com");
-        UserDto userDto = UserMapper.toUserDto(user1);
+        UserDto userDto = UserMapper.INSTANCE.toUserDto(user1);
         when(userRepository.findById(any(Integer.class)))
                 .thenReturn(Optional.empty());
         assertThatThrownBy(() -> userService.updateUser(userDto, userDtoThree.getId())).isInstanceOf(NoSuchElementException.class);

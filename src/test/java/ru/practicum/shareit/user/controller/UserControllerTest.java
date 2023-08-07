@@ -81,7 +81,7 @@ public class UserControllerTest {
 
     @Test
     public void getUserByIdTest() throws Exception {
-        when(userService.getUserById(any(Integer.class))).thenReturn(UserMapper.toUserDto(user));
+        when(userService.getUserById(any(Integer.class))).thenReturn(UserMapper.INSTANCE.toUserDto(user));
 
         mvc.perform(get("/users/1")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -105,7 +105,7 @@ public class UserControllerTest {
 
     @Test
     public void getAllUsersTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(List.of(UserMapper.toUserDto(user)));
+        when(userService.getAllUsers()).thenReturn(List.of(UserMapper.INSTANCE.toUserDto(user)));
         mvc.perform(get("/users")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

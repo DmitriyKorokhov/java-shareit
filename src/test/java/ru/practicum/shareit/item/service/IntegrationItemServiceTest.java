@@ -57,8 +57,8 @@ public class IntegrationItemServiceTest {
                 .name("booker")
                 .email("booker@mail.com")
                 .build();
-        createdOwner = userService.addUser(UserMapper.toUserDto(owner));
-        createdBooker = userService.addUser(UserMapper.toUserDto(booker));
+        createdOwner = userService.addUser(UserMapper.INSTANCE.toUserDto(owner));
+        createdBooker = userService.addUser(UserMapper.INSTANCE.toUserDto(booker));
         createdItem = itemService.addItem(ItemDto.builder()
                         .name("item")
                         .description("description")

@@ -50,7 +50,7 @@ public class BookingMapper {
                 .start(booking.getStart())
                 .end(booking.getEnd())
                 .item(ItemMapper.toItemDto(booking.getItem()))
-                .booker(UserMapper.toUserDto(booking.getBooker()))
+                .booker(UserMapper.INSTANCE.toUserDto(booking.getBooker()))
                 .status(booking.getStatus())
                 .build();
     }
