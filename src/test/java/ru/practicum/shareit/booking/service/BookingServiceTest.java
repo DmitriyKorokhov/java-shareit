@@ -100,12 +100,10 @@ public class BookingServiceTest {
         booking.setStatus(BookingStatus.WAITING);
         Booking approvedBooking = Booking.builder().id(booking.getId()).booker(booking.getBooker())
                 .item(booking.getItem()).status(BookingStatus.APPROVED).build();
-        when(bookingRepository.save(any(Booking.class))).thenReturn(approvedBooking);
         BookingResponseDto result = bookingService.approveBooking(1, true, owner.getId());
         assertNotNull(result);
         assertEquals(result.toString(), BookingMapper.toResponseBookingDto(booking).toString());
         verify(bookingRepository, times(3)).findById(1);
-        verify(bookingRepository, times(1)).save(any(Booking.class));
     }
 
     @Test

@@ -29,7 +29,7 @@ public class ItemRequestRepositoryTest {
     private ItemRequest request;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         LocalDateTime dateTime = LocalDateTime.now();
         user = userRepository.save(User.builder()
                 .name("user")
@@ -44,6 +44,12 @@ public class ItemRequestRepositoryTest {
                 .description("description")
                 .created(dateTime)
                 .build());
+    }
+
+    @AfterEach
+    void afterEach() {
+        userRepository.deleteAll();
+        itemRequestRepository.deleteAll();
     }
 
     @Test
@@ -65,11 +71,5 @@ public class ItemRequestRepositoryTest {
         assertEquals(request.getDescription(), result.getContent().get(0).getDescription());
         assertEquals(request.getRequestor(), result.getContent().get(0).getRequestor());
         assertEquals(request.getCreated(), result.getContent().get(0).getCreated());
-    }
-
-    @AfterEach
-    public void afterEach() {
-        userRepository.deleteAll();
-        itemRequestRepository.deleteAll();
     }
 }

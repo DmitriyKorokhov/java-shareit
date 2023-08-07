@@ -21,6 +21,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -74,6 +75,13 @@ public class ItemServiceTest {
         assertEquals(updateItem.toString(), ItemMapper.toItemDto(item).toString());
         verify(userRepository, times(1)).findById(1);
         verify(itemRepository, times(1)).findById(1);
+    }
+
+    @Test
+    void updateItemByNotOwnerTest() {
+        int userId = 100;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        assertThrows(ValidationException.class, () -> itemService.updateItem(item, userId));
     }
 
     @Test
@@ -199,5 +207,14 @@ public class ItemServiceTest {
                 .created(now)
                 .build();
         assertEquals(result, dto);
+    }
+
+    @Test
+    void createItemWithUserNotFoundExceptionValidationTest() {
+        int userId = 100;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        assertThrows(ValidationException.class, () -> itemService.addItem(ItemMapper.toItemDto(item), userId));
+        verify(itemRequestRepository, never()).findById(any());
+        verify(itemRepository, never()).save(any());
     }
 }

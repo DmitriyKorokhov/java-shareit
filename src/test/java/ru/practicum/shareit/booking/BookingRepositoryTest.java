@@ -58,6 +58,12 @@ public class BookingRepositoryTest {
                 .item(item).start(start).end(end).build());
     }
 
+    @AfterEach
+    void afterEach() {
+        userRepository.deleteAll();
+        itemRepository.deleteAll();
+        bookingRepository.deleteAll();
+    }
 
     @Test
     void findByBookerIdCurrentTest() {
@@ -184,12 +190,5 @@ public class BookingRepositoryTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.get(0));
-    }
-
-    @AfterEach
-    void afterEach() {
-        userRepository.deleteAll();
-        itemRepository.deleteAll();
-        bookingRepository.deleteAll();
     }
 }

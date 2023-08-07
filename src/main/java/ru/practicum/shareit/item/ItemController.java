@@ -72,7 +72,7 @@ public class ItemController {
                                                        @PositiveOrZero int from,
                                                        @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                                        @Positive int size) {
-        log.info("Поиск вещи: " + text);
+        log.info("Поиск вещи: {}", text);
         return itemService.findItemsByText(text, from, size);
     }
 

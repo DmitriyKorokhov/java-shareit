@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private int id;
-    @NotNull(message = "Description у Request должно существовать")
+    @NotBlank(message = "Description у Request должно существовать")
     private String description;
     @ManyToOne
     @JoinColumn(name = "requestor_id")

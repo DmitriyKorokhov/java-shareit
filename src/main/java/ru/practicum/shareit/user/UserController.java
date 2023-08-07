@@ -28,6 +28,7 @@ public class UserController {
         return userService.addUser(userDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
     public UserDto getUserById(@PathVariable int id) {
         log.info("Получение User с id = {}", id);

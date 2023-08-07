@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -26,6 +27,7 @@ public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ItemRequestResponseDto addRequest(@Validated({Create.class}) @RequestBody ItemRequestDto requestDto,
                                              @RequestHeader(USER_ID_HEADER) int requestorId) {
@@ -33,12 +35,14 @@ public class ItemRequestController {
         return itemRequestService.addItemRequest(requestDto, requestorId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<ItemRequestResponseDto> getAllRequestsByOwner(@RequestHeader(USER_ID_HEADER) int requestorId) {
         log.info("Получение запросов пользователя с id = {}", requestorId);
         return itemRequestService.getRequestForOwner(requestorId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/all")
     public List<ItemRequestResponseDto> getAllRequests(@RequestParam(defaultValue = DEFAULT_FROM_VALUE)
                                                        @PositiveOrZero int from,
@@ -49,6 +53,7 @@ public class ItemRequestController {
         return itemRequestService.getAllRequests(from, size, userId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{requestId}")
     public ItemRequestResponseDto getRequestById(@PathVariable int requestId,
                                                  @RequestHeader(USER_ID_HEADER) int userId) {

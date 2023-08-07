@@ -57,7 +57,6 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(Item updateItem, int ownerId) {
         User owner = findUser(ownerId);
         updateItem.setOwner(owner);
-
         Item item = getItem(updateItem.getId());
         if (updateItem.getName() != null && !updateItem.getName().isBlank()) {
             item.setName(updateItem.getName());

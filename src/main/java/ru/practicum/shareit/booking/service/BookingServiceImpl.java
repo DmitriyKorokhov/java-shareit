@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Бронирование уже подтверждено или отклонено");
         }
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        return BookingMapper.toResponseBookingDto(bookingRepository.save(booking));
+        return BookingMapper.toResponseBookingDto(booking);
     }
 
     @Override

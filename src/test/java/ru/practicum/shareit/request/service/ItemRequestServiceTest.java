@@ -11,17 +11,18 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.TestUtils.requestor;
@@ -73,7 +74,7 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void findAll() {
+    void findAllTest() {
         User requestor = new User(2, "user2", "user2@mail.com");
         User user = new User(1, "user1", "user1@mail.com");
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -111,7 +112,14 @@ public class ItemRequestServiceTest {
     }
 
     @Test
-    void findByIdTest() {
+    void getAllByRequesterWithWrongUserIdValidationTest() {
+        int userId = 100;
+        assertThrows(ValidationException.class, () -> itemRequestService.getAllRequests(0, 10, userId));
+        verify(itemRequestRepository, never()).findById(anyInt());
+    }
+
+    @Test
+    void getByIdTest() {
         User user = new User(1, "user1", "user1@mail.com");
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         ItemRequest request = ItemRequest.builder()
@@ -143,5 +151,54 @@ public class ItemRequestServiceTest {
         verify(userRepository, times(1)).findById(user.getId());
         verify(itemRequestRepository, times(1)).findById(request.getId());
         verify(itemRepository, times(1)).findAllByItemRequest(request);
+    }
+
+    @Test
+    void getByIdWithWrongUserIdValidationTest() {
+        User user = new User(1, "user1", "user1@mail.com");
+        ItemRequest request = ItemRequest.builder()
+                .id(1)
+                .description("request_description")
+                .requestor(user)
+                .build();
+        int userId = 100;
+        assertThrows(ValidationException.class, () -> itemRequestService.getRequestById(request.getId(), userId));
+        verify(itemRequestRepository, never()).findById(anyInt());
+    }
+
+    @Test
+    void getByIdWithWrongRequestIdValidationTest() {
+        User user = new User(1, "user1", "user1@mail.com");
+        int requestId = 100;
+        assertThrows(ValidationException.class, () -> itemRequestService.getRequestById(user.getId(), requestId));
+    }
+
+    @Test
+    public void createRequestTest() {
+        User user = new User(1, "user1", "user1@mail.com");
+        int userId = user.getId();
+        ItemRequestDto requestDto = ItemRequestDto.builder().description("request_description").build();
+        ItemRequest request = ItemRequest.builder()
+                .id(1)
+                .description(requestDto.getDescription())
+                .requestor(user)
+                .build();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(itemRequestRepository.save(any())).thenReturn(request);
+        ItemRequestResponseDto actualNewRequest = itemRequestService.addItemRequest(requestDto, userId);
+        assertNotNull(actualNewRequest);
+        assertEquals(request.getId(), actualNewRequest.getId());
+        assertEquals(request.getDescription(), actualNewRequest.getDescription());
+        verify(itemRequestRepository, times(1)).save(any());
+    }
+
+    @Test
+    void createWithWrongOwnerWithNotFoundExceptionTest() {
+        ItemRequestDto requestDto = ItemRequestDto.builder().description("request_description").build();
+        int userId = 100;
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        assertThrows(ValidationException.class, () -> itemRequestService.addItemRequest(requestDto, userId));
+        verify(itemRequestRepository, never()).findById(any());
+        verify(itemRepository, never()).save(any());
     }
 }

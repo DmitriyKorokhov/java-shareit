@@ -13,6 +13,7 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Intege
 
     List<ItemRequest> findRequestByRequestorIdOrderByCreatedDesc(int requestor);
 
-    @Query("select r from requests r where r.requestor.id <> :user_id")
+    @Query("SELECT r FROM requests AS r " +
+            "WHERE r.requestor.id <> :user_id")
     Page<ItemRequest> findAllForUser(@Param("user_id") int userId, Pageable pageable);
 }

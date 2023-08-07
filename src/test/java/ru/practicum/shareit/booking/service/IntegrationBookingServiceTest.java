@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,29 +32,53 @@ public class IntegrationBookingServiceTest {
     private final ItemService itemService;
     private final UserService userService;
 
-    @Test
-    void addBookingTest() {
-        UserDto userDto1 = new UserDto(1, "owner", "owner@mail.com");
-        UserDto userDto2 = new UserDto(2, "booker", "booker@mail.com");
-        UserDto createdOwner = userService.addUser(userDto1);
-        UserDto createdBooker = userService.addUser(userDto2);
-        ItemDto createdItem = itemService.addItem(ItemDto.builder().name("item1").description("description1")
+    private UserDto userDto1;
+    private UserDto userDto2;
+    private UserDto createdOwner;
+    private UserDto createdBooker;
+    private ItemDto createdItem;
+    private BookingRequestDto bookingRequestDto;
+    private BookingResponseDto booking;
+    private TypedQuery<Booking> query;
+    private Booking gottenBooking;
+
+    @BeforeEach
+    void init() {
+        userDto1 = new UserDto(1, "owner", "owner@mail.com");
+        userDto2 = new UserDto(2, "booker", "booker@mail.com");
+        createdOwner = userService.addUser(userDto1);
+        createdBooker = userService.addUser(userDto2);
+        createdItem = itemService.addItem(ItemDto.builder().name("item1").description("description1")
                 .available(true).build(), createdOwner.getId());
-        BookingRequestDto bookingRequestDto = BookingRequestDto.builder()
+        bookingRequestDto = BookingRequestDto.builder()
                 .itemId(createdItem.getId())
                 .start(LocalDateTime.now().plusDays(1))
                 .end(LocalDateTime.now().plusDays(2))
                 .build();
-        BookingResponseDto booking = bookingService.addBooking(bookingRequestDto, createdBooker.getId());
-        TypedQuery<Booking> query = em.createQuery("SELECT b FROM bookings AS b WHERE b.id = :bookingId", Booking.class);
-        Booking gottenBooking = query.setParameter("bookingId", booking.getId()).getSingleResult();
+        booking = bookingService.addBooking(bookingRequestDto, createdBooker.getId());
+        query = em.createQuery("SELECT b FROM bookings AS b WHERE b.id = :bookingId", Booking.class);
+        gottenBooking = query.setParameter("bookingId", booking.getId()).getSingleResult();
+    }
 
-        assertThat(gottenBooking.getId(), equalTo(booking.getId()));
-        assertThat(gottenBooking.getStatus(), equalTo(booking.getStatus()));
-        assertThat(gottenBooking.getStart(), equalTo(booking.getStart()));
-        assertThat(gottenBooking.getEnd(), equalTo(booking.getEnd()));
-
+    @AfterEach
+    void teardown() {
         userService.deleteUserById(createdOwner.getId());
         userService.deleteUserById(createdBooker.getId());
+    }
+
+    @Test
+    void addBookingTestWhenIdIsCorrect() {
+        assertThat(gottenBooking.getId(), equalTo(booking.getId()));
+    }
+
+    @Test
+    void addBookingTestWhenStatusIsCorrect() {
+        assertThat(gottenBooking.getStatus(), equalTo(booking.getStatus()));
+    }
+
+    @Test
+    void addBookingTestWhenStartAndEndIsCorrect() {
+        assertThat(gottenBooking.getStart(), equalTo(booking.getStart()));
+        assertThat(gottenBooking.getEnd(), equalTo(booking.getEnd()));
     }
 }

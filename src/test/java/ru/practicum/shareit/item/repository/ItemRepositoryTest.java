@@ -42,6 +42,13 @@ public class ItemRepositoryTest {
                 .available(true).itemRequest(request).owner(itemOwner).build());
     }
 
+    @AfterEach
+    void afterEach() {
+        userRepository.deleteAll();
+        itemRepository.deleteAll();
+        requestRepository.deleteAll();
+    }
+
     @Test
     void searchTest() {
         List<Item> result = itemRepository.search("description", Pageable.unpaged());
@@ -68,12 +75,5 @@ public class ItemRepositoryTest {
         assertEquals(item.getOwner(), result.get(0).getOwner());
         assertEquals(item.getName(), result.get(0).getName());
         assertEquals(item.getDescription(), result.get(0).getDescription());
-    }
-
-    @AfterEach
-    void afterEach() {
-        userRepository.deleteAll();
-        itemRepository.deleteAll();
-        requestRepository.deleteAll();
     }
 }

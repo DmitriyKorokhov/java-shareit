@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import lombok.SneakyThrows;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -19,7 +19,6 @@ public class BookingRequestDtoTest {
     private JacksonTester<BookingRequestDto> json;
 
     @Test
-    @SneakyThrows
     void bookingDtoTest() {
         LocalDateTime start = LocalDateTime.now().plusHours(1);
         LocalDateTime end = start.plusHours(1);
@@ -28,8 +27,12 @@ public class BookingRequestDtoTest {
                 .end(end)
                 .build();
 
-        Optional<JsonContent<BookingRequestDto>> result = Optional.of(json.write(bookingDto));
-
+        Optional<JsonContent<BookingRequestDto>> result;
+        try {
+            result = Optional.of(json.write(bookingDto));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Assertions.assertThat(result)
                 .isPresent()
                 .hasValueSatisfying(i -> {

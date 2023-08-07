@@ -16,10 +16,10 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    @Query("select b from bookings b " +
-            "where b.booker.id = :user_id " +
-            "and b.start < :time " +
-            "and b.end > :time")
+    @Query("SELECT b FROM bookings b " +
+            "WHERE b.booker.id = :user_id " +
+            "AND b.start < :time " +
+            "AND b.end > :time")
     Page<Booking> findByBookerIdCurrent(@Param("user_id") int userId, @Param("time") LocalDateTime now, Pageable page);
 
     Page<Booking> findByBookerIdAndEndIsBefore(int userId, LocalDateTime now, Pageable page);
@@ -28,11 +28,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findByBookerIdAndStatus(int userId, BookingStatus bookingStatus, Pageable page);
 
-    @Query("select b " +
-            "from bookings b " +
-            "where b.item.owner = :user " +
-            "and b.start < :time " +
-            "and b.end > :time")
+    @Query("SELECT b " +
+            "FROM bookings b " +
+            "WHERE b.item.owner = :user " +
+            "AND b.start < :time " +
+            "AND b.end > :time")
     Page<Booking> findBookingsByItemOwnerCurrent(@Param("user") User owner, @Param("time") LocalDateTime now, Pageable page);
 
     Page<Booking> findBookingByItemOwnerAndEndIsBefore(User owner, LocalDateTime now, Pageable page);

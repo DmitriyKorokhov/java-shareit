@@ -14,13 +14,15 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     Page<Item> findAllByOwnerOrderById(User user, Pageable page);
 
-    @Query(" select i from items i " +
-            "where upper(i.name) like upper(concat('%', :text, '%')) " +
-            " or upper(i.description) like upper(concat('%', :text, '%')) and i.available = true")
+    @Query("SELECT i FROM items i " +
+            "WHERE UPPER(i.name) LIKE UPPER(CONCAT('%', :text, '%')) " +
+            "OR UPPER(i.description) LIKE UPPER(CONCAT('%', :text, '%')) " +
+            "AND i.available = TRUE")
     List<Item> search(@Param("text") String text, Pageable page);
 
     List<Item> findAllByItemRequest(ItemRequest request);
 
-    @Query("select it from items as it where it.itemRequest in ?1")
-    List<Item> findAllByRequestIdIn(List<ItemRequest> requests);
+    @Query("SELECT it FROM items AS it " +
+            "WHERE it.itemRequest IN :requests")
+    List<Item> findAllByRequestIdIn(@Param("requests") List<ItemRequest> requests);
 }

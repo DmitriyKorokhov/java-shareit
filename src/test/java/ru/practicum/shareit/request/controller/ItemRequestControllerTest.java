@@ -62,7 +62,7 @@ public class ItemRequestControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().is(201))
                 .andExpect(jsonPath("$.id", is(request.getId()), Integer.class))
                 .andExpect(jsonPath("$.description", is(request.getDescription())))
                 .andExpect(jsonPath("$.created", is(notNullValue())));
