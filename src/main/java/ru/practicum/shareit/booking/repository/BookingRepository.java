@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    @Query("SELECT b FROM bookings b " +
+    @Query("SELECT b FROM bookings AS b " +
             "WHERE b.booker.id = :user_id " +
             "AND b.start < :time " +
             "AND b.end > :time")
@@ -28,8 +28,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Page<Booking> findByBookerIdAndStatus(int userId, BookingStatus bookingStatus, Pageable page);
 
-    @Query("SELECT b " +
-            "FROM bookings b " +
+    @Query("SELECT b FROM bookings AS b " +
             "WHERE b.item.owner = :user " +
             "AND b.start < :time " +
             "AND b.end > :time")
