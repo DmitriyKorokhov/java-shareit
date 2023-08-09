@@ -63,7 +63,7 @@ public class ItemRequestServiceTest {
                 .description(request.getDescription())
                 .items(ItemMapper.toItemForRequestDto(items))
                 .build();
-        List<ItemRequestResponseDto> result = itemRequestService.getRequestForOwner(requestor.getId());
+        List<ItemRequestResponseDto> result = itemRequestService.getAllRequestsByOwner(requestor.getId());
 
         assertNotNull(result);
         assertEquals(1, result.size());

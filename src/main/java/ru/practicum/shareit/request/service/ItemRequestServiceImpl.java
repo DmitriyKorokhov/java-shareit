@@ -41,7 +41,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestResponseDto> getRequestForOwner(int requestorId) {
+    @Transactional(readOnly = true)
+    public List<ItemRequestResponseDto> getAllRequestsByOwner(int requestorId) {
         findUser(requestorId);
         List<ItemRequest> requests = itemRequestRepository.findRequestByRequestorIdOrderByCreatedDesc(requestorId);
         Map<ItemRequest, List<Item>> itemsByRequest = findItemsByRequests(requests);
@@ -51,6 +52,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequestResponseDto> getAllRequests(int from, int size, int userId) {
         findUser(userId);
         Pageable page = new ShareitPageRequest(from, size, SORT_BY_CREATED_DESC);
@@ -62,6 +64,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequestResponseDto getRequestById(int requestId, int userId) {
         findUser(userId);
         ItemRequest request = itemRequestRepository.findById(requestId)

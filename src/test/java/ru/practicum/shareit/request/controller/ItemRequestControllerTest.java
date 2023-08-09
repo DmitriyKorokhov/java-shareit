@@ -70,7 +70,7 @@ public class ItemRequestControllerTest {
 
     @Test
     void getItemRequestForUserTest() throws Exception {
-        when(itemRequestService.getRequestForOwner(any(Integer.class))).thenReturn(List.of(itemRequestResponseDto));
+        when(itemRequestService.getAllRequestsByOwner(any(Integer.class))).thenReturn(List.of(itemRequestResponseDto));
         mvc.perform(get("/requests")
                         .header(USER_ID_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)

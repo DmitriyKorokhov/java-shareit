@@ -60,7 +60,7 @@ public class ItemController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
-    public ItemResponseDto getItemById(@PathVariable("id") int itemId, @RequestHeader(USER_ID_HEADER) int userId) {
+    public ItemResponseDto getItemForUser(@PathVariable("id") int itemId, @RequestHeader(USER_ID_HEADER) int userId) {
         log.info("Получение Item с id = {}", itemId);
         return itemService.getItemForUser(itemId, userId);
     }

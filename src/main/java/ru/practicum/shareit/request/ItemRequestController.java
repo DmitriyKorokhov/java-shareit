@@ -29,7 +29,7 @@ public class ItemRequestController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ItemRequestResponseDto addRequest(@Validated({Create.class}) @RequestBody ItemRequestDto requestDto,
+    public ItemRequestResponseDto addItemRequest(@Validated({Create.class}) @RequestBody ItemRequestDto requestDto,
                                              @RequestHeader(USER_ID_HEADER) int requestorId) {
         log.info("Добавление запроса с id = {}", requestorId);
         return itemRequestService.addItemRequest(requestDto, requestorId);
@@ -39,7 +39,7 @@ public class ItemRequestController {
     @GetMapping
     public List<ItemRequestResponseDto> getAllRequestsByOwner(@RequestHeader(USER_ID_HEADER) int requestorId) {
         log.info("Получение запросов пользователя с id = {}", requestorId);
-        return itemRequestService.getRequestForOwner(requestorId);
+        return itemRequestService.getAllRequestsByOwner(requestorId);
     }
 
     @ResponseStatus(HttpStatus.OK)
