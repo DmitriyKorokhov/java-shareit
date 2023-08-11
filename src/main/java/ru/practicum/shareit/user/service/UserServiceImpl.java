@@ -6,41 +6,40 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.util.Collection;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     @Override
     public UserDto addUser(UserDto userDto) {
-        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto, null)));
+        return UserMapper.INSTANCE.toUserDto(userRepository.save(UserMapper.INSTANCE.toUser(userDto, null)));
     }
 
-    @Override
     @Transactional(readOnly = true)
     public UserDto getUserById(int id) {
-        return UserMapper.toUserDto(userRepository.findById(id).orElseThrow(() ->
+        return UserMapper.INSTANCE.toUserDto(userRepository.findById(id).orElseThrow(() ->
                 new ValidationException(HttpStatus.NOT_FOUND, "Объект не найден")));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<UserDto> getAllUsers() {
-        return UserMapper.toListOfUserDto(userRepository.findAll());
+        return UserMapper.INSTANCE.toListOfUserDto(userRepository.findAll());
     }
 
     @Override
     @Transactional
     public UserDto updateUser(UserDto userDto, int userId) {
-        User updatedUser = UserMapper.toUser(userDto, userId);
+        User updatedUser = UserMapper.INSTANCE.toUser(userDto, userId);
         User user = userRepository.findById(updatedUser.getId()).orElseThrow();
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
         if (updatedUser.getEmail() != null) {
             user.setEmail(updatedUser.getEmail());
         }
-        return UserMapper.toUserDto(user);
+        return UserMapper.INSTANCE.toUserDto(user);
     }
 
     @Override

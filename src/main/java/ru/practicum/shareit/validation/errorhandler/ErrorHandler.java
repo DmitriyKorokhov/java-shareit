@@ -17,9 +17,10 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
+
     @ExceptionHandler(IncorrectStatusException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidation(final IncorrectStatusException e) {
+    public ErrorResponse handle(IncorrectStatusException e) {
         log.error(e.getMessage(), HttpStatus.resolve(400));
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
     }
@@ -40,7 +41,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(ValidationException.class)
     public ValidationException handleValidationException(final ValidationException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         throw e;
     }
 

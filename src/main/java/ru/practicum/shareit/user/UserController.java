@@ -5,16 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.validation.marker.Create;
-import ru.practicum.shareit.validation.marker.Update;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.marker.Create;
+import ru.practicum.shareit.validation.marker.Update;
 
 import java.util.Collection;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping(path = "/users")
 public class UserController {
 
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public UserDto getUserById(@PathVariable int id) {
         log.info("Получение User с id = {}", id);
         return userService.getUserById(id);
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/{id}")
+    @PatchMapping("{id}")
     public UserDto updateUser(@Validated({Update.class}) @RequestBody UserDto userDto,
                               @PathVariable("id") int id) {
         log.info("Обнавление User с id = {}", id);
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public void deleteUserById(@PathVariable int id) {
         log.info("Удаление User с id = {}", id);
         userService.deleteUserById(id);

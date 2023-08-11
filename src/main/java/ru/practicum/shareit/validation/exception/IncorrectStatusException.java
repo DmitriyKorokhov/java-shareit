@@ -1,7 +1,9 @@
 package ru.practicum.shareit.validation.exception;
 
-public class IncorrectStatusException extends RuntimeException {
-    public IncorrectStatusException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+
+public class IncorrectStatusException extends ValidationException {
+    public IncorrectStatusException(HttpStatus status, String message) {
+        super(status, message);
     }
 }

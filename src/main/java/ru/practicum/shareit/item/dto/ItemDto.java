@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemDto {
     private int id;
     @NotBlank(groups = {Create.class}, message = "Name у Item не может быть пустым")
@@ -16,4 +18,5 @@ public class ItemDto {
     private String description;
     @NotNull(groups = {Create.class}, message = "Available у Item не может быть пустым")
     private Boolean available;
+    private Integer requestId;
 }
